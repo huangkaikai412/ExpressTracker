@@ -42,11 +42,11 @@ app.post('/post',function(req,res) {
 	      company = req.body.company;
 	      telephone = parseInt(req.body.telephone);
 	var state = 1;
-	var msg = [username,address,company,telephone,state,Date.now];
+	var msg = [username,address,company,telephone,state];
 	console.log(msg);
 	
 	//插入数据库
-	connection.query('INSERT INTO `list`(`usrname`, `address`,`company`,`telephone`,`state`,`time`) VALUES (?,?,?,?,?,?)',msg,function(err,doc) {
+	connection.query('INSERT INTO `list`(`usrname`, `address`,`company`,`telephone`,`state`,`time`) VALUES (?,?,?,?,?,NOW())',msg,function(err,doc) {
 			if (err) {
 				console.log(err);
 				return res.redirect('/post');
