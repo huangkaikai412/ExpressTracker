@@ -1,0 +1,36 @@
+body {
+	background-color: #fbf9fe;
+}
+
+.page_title {
+	text-align: center;
+    font-size: 34px;
+    color: #3cc51f;
+    font-weight: 400;
+    margin: 0 15%;
+    padding: 1.5em 0;
+}
+
+.weui_cells_title {
+	font-size:18px;
+}
+
+.weui_cells {
+	background-color: #FFFFFF;
+}
+
+.weui_msg {
+	margin-top:20%;
+}
+
+.photo {
+	width: 50px;
+    margin: 5px;
+    display: block;
+    	border-radius:50%; 
+    overflow:hidden
+}
+
+.weui_media_desc {
+	font-size:18px ! important;
+}
