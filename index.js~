@@ -9,9 +9,9 @@ var getUserInfo = require('./user').getUserInfo;
 //连接数据库
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-  host: 'localhost',
+  host: '120.27.123.90:3306',
   user: 'root',
-  password: '813604',
+  password: 'root',
   database: 'express'
 });
 connection.connect(function (err) {if (err) throw err;});
