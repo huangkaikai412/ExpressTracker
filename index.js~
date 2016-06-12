@@ -5,13 +5,14 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 
 var getUserInfo = require('./user').getUserInfo;
+var reply = require('./reply').reply;
 
 //连接数据库
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-  host: '120.27.123.90',
+  host: 'localhost',
   user: 'root',
-  password: 'root',
+  password: '813604',
   database: 'express'
 });
 connection.connect(function (err) {if (err) throw err;});
@@ -62,6 +63,7 @@ app.post('/post',function(req,res) {
 		var nickname = userInfo.nickname;
 		      img = userInfo.headimgurl;
 		var msg = [openid,nickname,img,username,address,company,telephone,state];
+		console.log(userInfo);
 		console.log(msg);				
 	
 	//插入数据库
@@ -84,6 +86,8 @@ app.get('/success',function(req,res) {
 });
 
 app.get('/list',function(req,res) {
+	var openid = req.query.openid;
+	req.session.userid = openid;
 	connection.query('SELECT * FROM  list WHERE state=1',function(err,list) {
 		if (err) {
 			console.log(err);
@@ -121,6 +125,25 @@ app.get('/listall',function(req,res) {
 	});	
 });
 
+app.get('/receive',function(req,res) {
+	var msgid = req.query.msgid;
+	var openid = req.session.userid;
+	connection.query('UPDATE  `list` SET  `res_ID` =?,`state` =? WHERE  `id` =?',[openid,0,msgid],function(err,result) {
+		if (err) {
+			console.log(err);
+			return res.redirect('/list');
+		}
+		console.log('update sucessfully!');	
+	});
+	connection.query('SELECT * FROM `list` WHERE  `id` =?',msgid,function(err,result) {
+		if (err) {
+			console.log(err);
+			return res.redirect('/list');
+		}
+		console.log(result);
+		reply(result);
+	});
+});
 
 //监听3001端口
 app.listen(3001,function(req,res) {

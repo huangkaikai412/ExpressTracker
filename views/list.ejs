@@ -6,7 +6,7 @@
     <div class="weui_panel weui_panel_access">
         <div class="weui_panel_bd">
          	<% result.forEach(function (msg,index) { %>
-            <a href="/list?id=<%= msg.id %>" class="weui_media_box weui_media_appmsg">
+            <a href="javascript:void(0);" onclick="showDialog('dialog<%= msg.id%>')" class="weui_media_box weui_media_appmsg">
                 <div class="weui_media_hd">
                     <img class="photo" src="<%= msg.img %>" alt="">
                 </div>
@@ -16,8 +16,31 @@
                     </p>
                 </div>
             </a>
+            <div class="weui_dialog_confirm" id="dialog<%= msg.id%>" style="display: none;">
+    			<div class="weui_mask"></div>
+    			<div class="weui_dialog">
+        			<div class="weui_dialog_hd">
+        				<strong class="weui_dialog_title">请求确认</strong>
+        			</div>
+        			<div class="weui_dialog_bd">
+        				<%= msg.address %> <%= msg.company %> <%= msg.usrname %> <%= msg.telephone %>
+        			</div>
+        			<div class="weui_dialog_ft">
+            			<a href="javascript:void(0);" onclick="javascript:hideDialog('dialog<%= msg.id%>');" class="weui_btn_dialog default">取消</a>
+            			<a href="/receive?msgid=<%= msg.id%>" onclick="javascript:hideDialog('dialog<%= msg.id%>');" class="weui_btn_dialog primary">确定</a>
+        			</div>
+    			</div>
+			</div>
             	<% }) %>
         </div>
         <a class="weui_panel_ft" href="/listall">查看更多</a>
     </div>
+<script type="text/javascript">
+	function showDialog(id) {
+		document.getElementById(id).style.display="block";
+	}
+	function hideDialog(id) {
+		document.getElementById(id).style.display="none";
+	}
+</script>
 <%- include footer%>
