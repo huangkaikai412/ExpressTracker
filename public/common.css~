@@ -8,7 +8,7 @@ body {
     color: #3cc51f;
     font-weight: 400;
     margin: 0 15%;
-    padding: 1.5em 0;
+    padding: 2em 0;
 }
 
 .weui_cells_title {
@@ -33,4 +33,34 @@ body {
 
 .weui_media_desc {
 	font-size:18px ! important;
+}
+
+.ft {
+content: " ";
+    display: inline-block;
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    height: 10px;
+    width: 10px;
+    border-width: 2px 2px 0 0;
+    border-color: #C8C8CD;
+    border-style: solid;
+    position: relative;
+    top: -2px;
+    top: -1px;
+    margin-left: .3em;
+}
+
+.button_bar {
+	width:100%;
+	text-align:center;
+	padding:10px 0;
+}
+
+.btn_bar {
+	text-align: center;
+	line-height: 42px;
+	padding:15px 20%;	
+	margin:0;
+	color:white;
 }

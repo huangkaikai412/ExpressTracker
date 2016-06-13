@@ -12,7 +12,7 @@ var mysql = require('mysql');
 var connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'root',
+  password: '813604',
   database: 'express'
 });
 connection.connect(function (err) {if (err) throw err;});
@@ -143,6 +143,35 @@ app.get('/receive',function(req,res) {
 	});
 	res.redirect('/list?openid='+req.session.userid);
 });
+
+//app.get('/my',function(req,res) {
+//	req.session.userid = req.query.openid;
+//	connection.query('SELECT * FROM `list` WHERE  `req_ID` =?',req.session.userid,function(err,result) {
+//		if (err) {
+//			console.log(err);
+//			return res.redirect('/list?openid='+req.session.userid);
+//		}
+//		console.log(result);
+//		res.render('my',{
+//			title:'请求列表',
+//			result:result
+//		});
+//	});
+//});
+
+//app.get('/edit',function(req,res) {
+//	var msgid = req.query.msgid;
+//	connection.query('SELECT * FROM `list` WHERE  `id` =?',msgid,function(err,result) {
+//		if (err) {
+//			console.log(err);
+//			return res.redirect('/list?openid='+req.session.userid);
+//		}
+//		res.render('edit',{
+//			title:'编辑请求',
+//			msg:result[0]
+//		});
+//	});
+//});
 
 //监听3001端口
 app.listen(3001,function(req,res) {
