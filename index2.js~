@@ -146,7 +146,7 @@ app.get('/receive',function(req,res) {
 
 app.get('/my',function(req,res) {
 	req.session.userid = req.query.openid;
-	connection.query('SELECT * FROM `list` WHERE  `req_ID` =?',req.session.userid,function(err,result) {
+	connection.query('SELECT * FROM `list` WHERE  `req_ID` =? && `state`=1',req.session.userid,function(err,result) {
 		if (err) {
 			console.log(err);
 			return res.redirect('/list?openid='+req.session.userid);
@@ -171,6 +171,34 @@ app.get('/edit',function(req,res) {
 			msg:result[0]
 		});
 	});
+});
+
+app.post('/edit',function(req,res) {
+	var msgid = req.query.msgid;
+	var username = req.body.username;
+	      address = req.body.adress;
+	      company = req.body.company;
+	      telephone = parseInt(req.body.telephone);
+	var data = [username,address,company,telephone,msgid];
+	console.log(data);
+	connection.query('UPDATE  `list` SET  `usrname` =?,`address` =?,`company` =?,`telephone` =? WHERE  `id` =?',data,function(err,result) {
+		if (err) {
+			console.log(err);
+			return res.redirect('/list?openid='+req.session.userid);
+		}
+	});
+	res.redirect('/list?openid='+req.session.userid);
+});
+
+app.get('/delete',function(req,res) {
+	var msgid = req.query.msgid;
+	connection.query('DELETE  FROM `list` WHERE  `id` =?',msgid,function(err,result) {
+		if (err) {
+			console.log(err);
+			return res.redirect('/list?openid='+req.session.userid);
+		}
+	});
+	res.redirect('/list?openid='+req.session.userid);
 });
 
 //监听3001端口
