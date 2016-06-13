@@ -201,7 +201,6 @@ app.get('/edit',function(req,res) {
 			msg:result[0]
 		});
 	});
-	});
 });
 
 app.post('/edit',function(req,res) {
