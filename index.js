@@ -48,7 +48,7 @@ app.get('/post',function(req,res) {
 			req.session.userid = openid;
 		});
 	}
-	console.log(openid);
+	console.log(req.session.userid);
 	res.render('post',{
 		title:'发布请求'
 	});	
