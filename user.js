@@ -16,7 +16,6 @@ function getOpenID(code) {
     		console.log(err);
   	});  
 }
-}
 
 function getUserInfo(openID){
   	return getToken(appID, appSecret).then(function(res){
