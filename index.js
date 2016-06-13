@@ -175,7 +175,9 @@ app.get('/my',function(req,res) {
 });
 
 app.get('/edit',function(req,res) {
-	var msgid = req.query.msgid;
+	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
+		getOpenID(req.query.code).then(function(openid) {
+			if (typeof(req.session.userid) != 'undefined') req.session.userid = openid;
 	connection.query('SELECT * FROM `list` WHERE  `id` =?',msgid,function(err,result) {
 		if (err) {
 			console.log(err);
@@ -186,6 +188,19 @@ app.get('/edit',function(req,res) {
 			msg:result[0]
 		});
 	});
+	});
+	}else {
+	connection.query('SELECT * FROM `list` WHERE  `id` =?',msgid,function(err,result) {
+		if (err) {
+			console.log(err);
+			return res.redirect('/list?openid='+req.session.userid);
+		}
+		res.render('edit',{
+			title:'编辑请求',
+			msg:result[0]
+		});
+	});
+	}
 });
 
 app.post('/edit',function(req,res) {
