@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 
 var getUserInfo = require('./user').getUserInfo;
-var getUserInfo = require('./user').getOpenID;
+var getOpenID = require('./user').getOpenID;
 var reply = require('./reply').reply;
 
 //连接数据库
