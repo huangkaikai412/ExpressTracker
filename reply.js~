@@ -3,31 +3,48 @@ var appSecret = require('./config').appSecret;
 var getToken = require('./token').getToken;
 var getUserInfo = require('./user').getUserInfo;
 
+var request = require('request');
 
 function reply(msg){			
 	getToken(appID, appSecret).then(function(res){
     	var token = res.access_token;
-    		request('https://api.weixin.qq.com/cgi-bin/user/info?access_token='+token+'&openid='+res_ID+'&lang=zh_CN', function(err, res, data){
+    		request('https://api.weixin.qq.com/cgi-bin/user/info?access_token='+token+'&openid='+msg.res_ID+'&lang=zh_CN', function(err, res, data){
           	var name = JSON.parse(data).nickname;
+          	console.log(data);
         //发送消息给求取者
-    		request.post({url:'https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token='+token,
-    		 form: {
-    		"touser": msg.req_ID, 
+    		request({url:'https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token='+token,
+    		method: 'POST',
+    		json:true,	 
+ 		body: {
+ 			"touser": msg.res_ID, 
     		"msgtype": "text", 
-    		"text": {
-       			 "content": name+"接受了你的请求,正在帮你取快递途中~"
-    		}	
-    		 }}, function(err,httpResponse,body){console.log(body) });
+    		"text": {	
+         		"content":name+"接受了你的的请求,即将把快递送到你手上~"
+    			}	
+    		}}, function(err,httpResponse,body){
+    		if (err) {
+    			return console.error('Send failed:', err);
+ 			}
+  			console.log('Server responded with:', body);
+  		});
     	
-    	//发送消息给帮取者	 
-    		request.post({url:'https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token='+token,
-    		 form: {
+    	//发送消息给帮取者	
+    		request({url:'https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token='+token,
+    		method: 'POST',
+    		json:true,	     		
+    		body: {
     		"touser": msg.res_ID, 
     		"msgtype": "text", 
     		"text": {	
-         		"content":'你接受了'+msg.nickname+'的请求,快帮ta把快递安全送到吧~'+' '+msg.usrname+'yizhi '+msg.address+" "+msg.company
+         		"content":"你接受了"+msg.nickname+"的请求,快帮ta把快递安全送到吧~\n"+"快递信:"+msg.usrname+" "+msg.address+" "+msg.company
     			}	
-    		 }}, function(err,httpResponse,body){console.log(body) });
+    		}}, function(err,httpResponse,body){
+    		if (err) {
+    			return console.error('Send failed:', err);
+ 			}
+  			console.log('Server responded with:', body);
+  		});
+    		 
     		});
     	});
 }

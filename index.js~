@@ -70,7 +70,7 @@ app.post('/post',function(req,res) {
 	connection.query('INSERT INTO `list`(`req_ID`,`nickname`,`img`,`usrname`, `address`,`company`,`telephone`,`state`,`time`) VALUES (?,?,?,?,?,?,?,?,NOW())',msg,function(err,doc) {
 			if (err) {
 				console.log(err);
-				return res.redirect('/post');
+				return res.redirect('/post?openid='+req.session.userid);
 			}
 			console.log('Post sucessfully！');
 			return res.redirect('/success');
@@ -91,7 +91,7 @@ app.get('/list',function(req,res) {
 	connection.query('SELECT * FROM  list WHERE state=1',function(err,list) {
 		if (err) {
 			console.log(err);
-			return res.redirect('/post');
+			return res.redirect('/post?openid='+req.session.userid);
 		}
 		var result = [];
 		var total = list.length;
@@ -114,7 +114,7 @@ app.get('/listall',function(req,res) {
 	connection.query('SELECT * FROM  list WHERE state=1',function(err,result) {
 		if (err) {
 			console.log(err);
-			return res.redirect('/post');
+			return res.redirect('/post?openid='+req.session.userid);
 		}	
 		
 		console.log(result);
@@ -131,18 +131,19 @@ app.get('/receive',function(req,res) {
 	connection.query('UPDATE  `list` SET  `res_ID` =?,`state` =? WHERE  `id` =?',[openid,0,msgid],function(err,result) {
 		if (err) {
 			console.log(err);
-			return res.redirect('/list');
+			return res.redirect('/list?openid='+req.session.userid);
 		}
 		console.log('update sucessfully!');	
 	});
 	connection.query('SELECT * FROM `list` WHERE  `id` =?',msgid,function(err,result) {
 		if (err) {
 			console.log(err);
-			return res.redirect('/list');
+			return res.redirect('/list?openid='+req.session.userid);
 		}
 		console.log(result);
-		reply(result);
+		reply(result[0]);
 	});
+	res.redirect('/list?openid='+req.session.userid);
 });
 
 //监听3001端口
