@@ -47,6 +47,7 @@ app.get('/post',function(req,res) {
 		getOpenID(req.query.code).then(function(openid) {
 		console.log(openid);
 			req.session.userid = openid;
+			console.log(req.session);
 			res.render('post',{
 				title:'发布请求'
 			});
@@ -141,6 +142,7 @@ app.get('/listall',function(req,res) {
 app.get('/receive',function(req,res) {
 	var msgid = req.query.msgid;
 	var openid = req.session.userid;
+	console.log(openid);
 	connection.query('UPDATE  `list` SET  `res_ID` =?,`state` =? WHERE  `id` =?',[openid,0,msgid],function(err,result) {
 		if (err) {
 			console.log(err);
