@@ -8,8 +8,8 @@ function getOpenID(code) {
     var token = res.access_token;
 
     return new Promise(function(resolve, reject){
-    console.log('https://api.weixin.qq.com/sns/oauth2/access_token?appid='+appID+'&secret='+appSecret+'&code='+code+'&grant_type=authorization_code');
     		request('https://api.weixin.qq.com/sns/oauth2/access_token?appid='+appID+'&secret='+appSecret+'&code='+code+'&grant_type=authorization_code', function(err, res, data){
+    		console.log(JSON.parse(data).openid)
           		resolve(JSON.parse(data).openid);
             		});
    	});
