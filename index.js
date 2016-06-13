@@ -91,7 +91,7 @@ app.post('/post',function(req,res) {
 			console.log('Post sucessfully！');
 			return res.redirect('/success');
 		});
-		
+		});
 	});
 });
 

@@ -54,7 +54,7 @@ app.get('/post',function(req,res) {
 //		});
 //	}else {
 
-	req.session.code = req.session.code;
+	req.session.code = req.query.code;
 	console.log(req.session);
 		res.render('post',{
 			title:'发布请求'
@@ -102,7 +102,7 @@ app.get('/success',function(req,res) {
 });
 
 app.get('/list',function(req,res) {
-	req.session.code = req.session.code;
+	req.session.code = req.query.code;
 	connection.query('SELECT * FROM  list WHERE state=1',function(err,list) {
 		if (err) {
 			console.log(err);
@@ -141,6 +141,7 @@ app.get('/listall',function(req,res) {
 });
 
 app.get('/receive',function(req,res) {
+	console.log(req.session.code);
 	getOpenID(req.session.code).then(function(openid) {
 	req.session.userid = openid;
 	var msgid = req.query.msgid;
