@@ -46,15 +46,10 @@ app.get('/post',function(req,res) {
 	if (typeof(req.session.userid) !== 'undefined' && req.session.userid) {
 	getOpenID(req.query.code).then(function(openid) {
 		req.session.userid = openid;
-		res.render('post',{
-			title:'发布请求'
-		});
 	});
-	}else {
-		res.render('post',{
-			title:'发布请求'
-		});
-	}	
+	res.render('post',{
+		title:'发布请求'
+	});	
 });
 
 app.post('/post',function(req,res) {
