@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 
 var getUserInfo = require('./user').getUserInfo;
+var getUserInfo = require('./user').getOpenID;
 var reply = require('./reply').reply;
 
 //连接数据库
@@ -42,10 +43,12 @@ app.use(session({
 
 //响应页面请求
 app.get('/post',function(req,res) {
-	var openid = req.query.openid;
-	req.session.userid = openid;
-	res.render('post',{
-		title:'发布请求'
+	req.session.code = req.query.code;
+	getOpenID(req.query.code).then(function(openid) {
+		req.session.userid = openid;
+		res.render('post',{
+			title:'发布请求'
+		});
 	});	
 });
 
@@ -86,7 +89,9 @@ app.get('/success',function(req,res) {
 });
 
 app.get('/list',function(req,res) {
-	var openid = req.query.openid;
+	if (req.query.code=='') var code = req.session.code;
+	else code = req.query.code;
+	getOpenID(code).then(function(openid) {
 	req.session.userid = openid;
 	connection.query('SELECT * FROM  list WHERE state=1',function(err,list) {
 		if (err) {
