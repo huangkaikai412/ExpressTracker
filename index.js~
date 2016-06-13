@@ -44,9 +44,10 @@ app.use(session({
 //响应页面请求
 app.get('/post',function(req,res) {
 	if (typeof(req.session.userid) !== 'undefined' && req.session.userid) {
-	getOpenID(req.query.code).then(function(openid) {
-		req.session.userid = openid;
-	});
+		getOpenID(req.query.code).then(function(openid) {
+			req.session.userid = openid;
+		});
+	}
 	res.render('post',{
 		title:'发布请求'
 	});	
