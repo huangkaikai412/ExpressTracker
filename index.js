@@ -46,7 +46,7 @@ app.get('/post',function(req,res) {
 	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
 		getOpenID(req.query.code).then(function(openid) {
 			req.session.userid = openid;
-			console.log(req.session.userid);
+			console.log(req.session);
 		});
 	}
 	console.log(req.session.userid);
