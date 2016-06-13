@@ -159,6 +159,64 @@ app.get('/receive',function(req,res) {
 	res.redirect('/list?openid='+req.session.userid);
 });
 
+app.get('/my',function(req,res) {
+	req.session.userid = req.query.openid;
+	connection.query('SELECT * FROM `list` WHERE  `req_ID` =? && `state`=1',req.session.userid,function(err,result) {
+		if (err) {
+			console.log(err);
+			return res.redirect('/list?openid='+req.session.userid);
+		}
+		console.log(result);
+		res.render('my',{
+			title:'请求列表',
+			result:result
+		});
+	});
+});
+
+app.get('/edit',function(req,res) {
+	var msgid = req.query.msgid;
+	connection.query('SELECT * FROM `list` WHERE  `id` =?',msgid,function(err,result) {
+		if (err) {
+			console.log(err);
+			return res.redirect('/list?openid='+req.session.userid);
+		}
+		res.render('edit',{
+			title:'编辑请求',
+			msg:result[0]
+		});
+	});
+});
+
+app.post('/edit',function(req,res) {
+	var msgid = req.query.msgid;
+	var username = req.body.username;
+	      address = req.body.adress;
+	      company = req.body.company;
+	      telephone = parseInt(req.body.telephone);
+	var data = [username,address,company,telephone,msgid];
+	console.log(data);
+	connection.query('UPDATE  `list` SET  `usrname` =?,`address` =?,`company` =?,`telephone` =? WHERE  `id` =?',data,function(err,result) {
+		if (err) {
+			console.log(err);
+			return res.redirect('/list?openid='+req.session.userid);
+		}
+	});
+	res.redirect('/list?openid='+req.session.userid);
+});
+
+app.get('/delete',function(req,res) {
+	var msgid = req.query.msgid;
+	connection.query('DELETE  FROM `list` WHERE  `id` =?',msgid,function(err,result) {
+		if (err) {
+			console.log(err);
+			return res.redirect('/list?openid='+req.session.userid);
+		}
+	});
+	res.redirect('/list?openid='+req.session.userid);
+});
+
+
 //监听3001端口
 app.listen(3001,function(req,res) {
 	console.log('app is running at port 3001');
