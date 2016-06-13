@@ -45,7 +45,7 @@ app.use(session({
 app.get('/post',function(req,res) {
 	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
 		getOpenID(req.query.code).then(function(openid) {
-			if (typeof(req.session.userid) != 'undefined') req.session.userid = openid;
+			if (typeof(req.session.userid) !== 'undefined') req.session.userid = openid;
 			console.log(req.session);
 			res.render('post',{
 				title:'发布请求'
@@ -177,7 +177,7 @@ app.get('/my',function(req,res) {
 app.get('/edit',function(req,res) {
 	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
 		getOpenID(req.query.code).then(function(openid) {
-			if (typeof(req.session.userid) != 'undefined') req.session.userid = openid;
+			if (typeof(req.session.userid) !== 'undefined') req.session.userid = openid;
 	connection.query('SELECT * FROM `list` WHERE  `id` =?',msgid,function(err,result) {
 		if (err) {
 			console.log(err);
