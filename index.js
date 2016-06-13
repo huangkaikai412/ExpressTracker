@@ -46,6 +46,7 @@ app.get('/post',function(req,res) {
 	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
 		getOpenID(req.query.code).then(function(openid) {
 			if (typeof(req.session.userid) != 'undefined') req.session.userid = openid;
+			console.log(req.session);
 			res.render('post',{
 				title:'发布请求'
 			});
