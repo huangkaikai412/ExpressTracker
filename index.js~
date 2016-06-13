@@ -45,8 +45,8 @@ app.use(session({
 app.get('/post',function(req,res) {
 	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
 		getOpenID(req.query.code).then(function(openid) {
-			if (typeof(req.session.userid) != 'undefined') req.session.userid = openid;
-			console.log(req.session);
+		console.log(openid);
+			req.session.userid = openid;
 			res.render('post',{
 				title:'发布请求'
 			});
@@ -160,7 +160,9 @@ app.get('/receive',function(req,res) {
 });
 
 app.get('/my',function(req,res) {
-	req.session.userid = req.query.openid;
+	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
+		getOpenID(req.query.code).then(function(openid) {
+			req.session.userid = openid;
 	connection.query('SELECT * FROM `list` WHERE  `req_ID` =? && `state`=1',req.session.userid,function(err,result) {
 		if (err) {
 			console.log(err);
@@ -172,35 +174,34 @@ app.get('/my',function(req,res) {
 			result:result
 		});
 	});
-});
-
-app.get('/edit',function(req,res) {
-	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
-		getOpenID(req.query.code).then(function(openid) {
-			if (typeof(req.session.userid) != 'undefined') req.session.userid = openid;
-	connection.query('SELECT * FROM `list` WHERE  `id` =?',msgid,function(err,result) {
-		if (err) {
-			console.log(err);
-			return res.redirect('/list?openid='+req.session.userid);
-		}
-		res.render('edit',{
-			title:'编辑请求',
-			msg:result[0]
-		});
-	});
 	});
 	}else {
-	connection.query('SELECT * FROM `list` WHERE  `id` =?',msgid,function(err,result) {
+	connection.query('SELECT * FROM `list` WHERE  `req_ID` =? && `state`=1',req.session.userid,function(err,result) {
 		if (err) {
 			console.log(err);
 			return res.redirect('/list?openid='+req.session.userid);
 		}
-		res.render('edit',{
-			title:'编辑请求',
-			msg:result[0]
+		console.log(result);
+		res.render('my',{
+			title:'请求列表',
+			result:result
 		});
 	});
 	}
+});
+
+app.get('/edit',function(req,res) {
+	connection.query('SELECT * FROM `list` WHERE  `id` =?',msgid,function(err,result) {
+		if (err) {
+			console.log(err);
+			return res.redirect('/list?openid='+req.session.userid);
+		}
+		res.render('edit',{
+			title:'编辑请求',
+			msg:result[0]
+		});
+	});
+	});
 });
 
 app.post('/edit',function(req,res) {
