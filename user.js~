@@ -32,6 +32,6 @@ function getUserInfo(openID){
 }
 
 module.exports = {
-  	getUserInfo: getUserInfo
+  	getUserInfo: getUserInfo,
   	getOpenID:getOpenID
 };
