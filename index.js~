@@ -47,12 +47,16 @@ app.get('/post',function(req,res) {
 		getOpenID(req.query.code).then(function(openid) {
 			req.session.userid = openid;
 			console.log(req.session);
+			res.render('post',{
+				title:'发布请求'
+			});
 		});
-	}
-	console.log(req.session);
-	res.render('post',{
-		title:'发布请求'
-	});	
+	}else {
+		console.log(req.session);
+		res.render('post',{
+			title:'发布请求'
+		});
+	}	
 });
 
 app.post('/post',function(req,res) {
