@@ -43,12 +43,12 @@ app.use(session({
 
 //响应页面请求
 app.get('/post',function(req,res) {
-	req.session.code = req.query.code;
+	if (typeof(req.session.userid) !== 'undefined' && req.session.userid) {
 	getOpenID(req.query.code).then(function(openid) {
 		req.session.userid = openid;
-		res.render('post',{
-			title:'发布请求'
-		});
+	});
+	res.render('post',{
+		title:'发布请求'
 	});	
 });
 
@@ -89,10 +89,11 @@ app.get('/success',function(req,res) {
 });
 
 app.get('/list',function(req,res) {
-	if (req.query.code=='') var code = req.session.code;
-	else code = req.query.code;
-	getOpenID(code).then(function(openid) {
-	req.session.userid = openid;
+	if (typeof(req.session.userid) !== 'undefined' && req.session.userid) {
+		getOpenID(req.query.code).then(function(openid) {
+			req.session.userid = openid;
+		});
+	}
 	connection.query('SELECT * FROM  list WHERE state=1',function(err,list) {
 		if (err) {
 			console.log(err);
@@ -112,7 +113,6 @@ app.get('/list',function(req,res) {
 			title:'请求列表',
 			result:result
 		});
-	});
 	});	
 });
 
