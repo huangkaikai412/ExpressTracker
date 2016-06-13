@@ -112,6 +112,7 @@ app.get('/list',function(req,res) {
 			title:'请求列表',
 			result:result
 		});
+	});
 	});	
 });
 

@@ -89,7 +89,7 @@ app.get('/success',function(req,res) {
 });
 
 app.get('/list',function(req,res) {
-	if (req.query.code==='') var code = req.session.code;
+	if (req.query.code=='') var code = req.session.code;
 	else code = req.query.code;
 	getOpenID(code).then(function(openid) {
 	req.session.userid = openid;
