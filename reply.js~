@@ -36,7 +36,7 @@ function reply(msg){
     		"touser": msg.res_ID, 
     		"msgtype": "text", 
     		"text": {	
-         		"content":"你接受了"+msg.nickname+"的请求,快帮ta把快递安全送到吧~\n"+"快递信:"+msg.usrname+" "+msg.address+" "+msg.company
+         		"content":"你接受了"+msg.nickname+"的请求,快帮ta把快递安全送到吧~\n"+"快递信息:"+msg.usrname+" "+msg.address+" "+msg.company
     			}	
     		}}, function(err,httpResponse,body){
     		if (err) {

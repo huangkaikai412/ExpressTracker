@@ -8,6 +8,7 @@ var request = require('request');
 function reply(msg){			
 	getToken(appID, appSecret).then(function(res){
     	var token = res.access_token;
+    	console.log('https://api.weixin.qq.com/cgi-bin/user/info?access_token='+token+'&openid='+msg.res_ID+'&lang=zh_CN');
     		request('https://api.weixin.qq.com/cgi-bin/user/info?access_token='+token+'&openid='+msg.res_ID+'&lang=zh_CN', function(err, res, data){
           	var name = JSON.parse(data).nickname;
           	console.log(data);
