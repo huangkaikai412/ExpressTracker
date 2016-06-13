@@ -43,9 +43,9 @@ app.use(session({
 
 //响应页面请求
 app.get('/post',function(req,res) {
-	if (typeof(req.session.userid) == 'undefined' && !req.session.userid) {
-		getOpenID(req.query.code).then(function(openid) {
-			req.session.userid = openid;
+	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
+		getOpenID(req.query.code).then(function(data) {
+			req.session.userid = data.openid;
 		});
 	}
 	console.log(req.session.userid);
@@ -91,9 +91,9 @@ app.get('/success',function(req,res) {
 });
 
 app.get('/list',function(req,res) {
-	if (typeof(req.session.userid) == 'undefined' && !req.session.userid) {
-		getOpenID(req.query.code).then(function(openid) {
-			req.session.userid = openid;
+	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
+		getOpenID(req.query.code).then(function(data) {
+			req.session.userid = data.openid;
 		});
 	}
 	connection.query('SELECT * FROM  list WHERE state=1',function(err,list) {
