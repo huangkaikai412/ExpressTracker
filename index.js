@@ -43,26 +43,31 @@ app.use(session({
 
 //响应页面请求
 app.get('/post',function(req,res) {
-	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
-		getOpenID(req.query.code).then(function(openid) {
-		console.log(openid);
-			req.session.userid = openid;
-			console.log(req.session);
-			res.render('post',{
-				title:'发布请求'
-			});
-		});
-	}else {
-		console.log(req.session);
+//	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
+//		getOpenID(req.query.code).then(function(openid) {
+//		console.log(openid);
+//			req.session.userid = openid;
+//			console.log(req.session);
+//			res.render('post',{
+//				title:'发布请求'
+//			});
+//		});
+//	}else {
+
+	req.session.code = req.query.code;
+	console.log(req.session);
 		res.render('post',{
 			title:'发布请求'
 		});
-	}	
+//	}	
 });
 
 app.post('/post',function(req,res) {
+	console.log(req.session.code);
+	getOpenID(req.session.code).then(function(openid) {
+	req.session.userid = openid;
 	//获取表单每项数据
-	var openid = req.session.userid;
+	//var openid = req.session.userid;
 	var username = req.body.username;
 	      address = req.body.adress;
 	      company = req.body.company;
@@ -87,7 +92,7 @@ app.post('/post',function(req,res) {
 			return res.redirect('/success');
 		});
 		
-		});
+	});
 });
 
 app.get('/success',function(req,res) {
@@ -97,11 +102,7 @@ app.get('/success',function(req,res) {
 });
 
 app.get('/list',function(req,res) {
-	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
-		getOpenID(req.query.code).then(function(openid) {
-			req.session.userid = openid;
-		});
-	}
+	req.session.code = req.query.code;
 	connection.query('SELECT * FROM  list WHERE state=1',function(err,list) {
 		if (err) {
 			console.log(err);
@@ -140,8 +141,11 @@ app.get('/listall',function(req,res) {
 });
 
 app.get('/receive',function(req,res) {
+	console.log(req.session.code);
+	getOpenID(req.session.code).then(function(openid) {
+	req.session.userid = openid;
 	var msgid = req.query.msgid;
-	var openid = req.session.userid;
+	//var openid = req.session.userid;
 	console.log(openid);
 	connection.query('UPDATE  `list` SET  `res_ID` =?,`state` =? WHERE  `id` =?',[openid,0,msgid],function(err,result) {
 		if (err) {
@@ -159,6 +163,7 @@ app.get('/receive',function(req,res) {
 		reply(result[0]);
 	});
 	res.redirect('/list?openid='+req.session.userid);
+	});
 });
 
 app.get('/my',function(req,res) {
