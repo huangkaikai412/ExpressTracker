@@ -203,6 +203,7 @@ app.get('/my',function(req,res) {
 });
 
 app.get('/edit',function(req,res) {
+	var msgid = req.query.msgid;
 	connection.query('SELECT * FROM `list` WHERE  `id` =?',msgid,function(err,result) {
 		if (err) {
 			console.log(err);
