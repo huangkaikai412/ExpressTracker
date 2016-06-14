@@ -43,31 +43,31 @@ app.use(session({
 
 //响应页面请求
 app.get('/post',function(req,res) {
-//	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
-//		getOpenID(req.query.code).then(function(openid) {
-//		console.log(openid);
-//			req.session.userid = openid;
-//			console.log(req.session);
-//			res.render('post',{
-//				title:'发布请求'
-//			});
-//		});
-//	}else {
+	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
+		getOpenID(req.query.code).then(function(openid) {
+		console.log(openid);
+			req.session.userid = openid;
+			console.log(req.session);
+			res.render('post',{
+				title:'发布请求'
+			});
+		});
+	}else {
 
-	req.session.code = req.query.code;
+	//req.session.code = req.query.code;
 	console.log(req.session);
 		res.render('post',{
 			title:'发布请求'
 		});
-//	}	
+	}	
 });
 
 app.post('/post',function(req,res) {
-	console.log(req.session.code);
-	getOpenID(req.session.code).then(function(openid) {
-	req.session.userid = openid;
+//	console.log(req.session.code);
+//	getOpenID(req.session.code).then(function(openid) {
+//	req.session.userid = openid;
 	//获取表单每项数据
-	//var openid = req.session.userid;
+	var openid = req.session.userid;
 	var username = req.body.username;
 	      address = req.body.adress;
 	      company = req.body.company;
@@ -92,7 +92,7 @@ app.post('/post',function(req,res) {
 			return res.redirect('/success');
 		});
 		});
-	});
+//	});
 });
 
 app.get('/success',function(req,res) {
