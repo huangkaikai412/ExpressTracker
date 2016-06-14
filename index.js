@@ -149,7 +149,7 @@ app.get('/receive',function(req,res) {
 //	console.log(req.session.code);
 //	getOpenID(req.session.code).then(function(openid) {
 //	req.session.userid = openid;
-//	var msgid = req.query.msgid;
+	var msgid = req.query.msgid;
 	var openid = req.session.userid;
 	console.log(openid);
 	connection.query('UPDATE  `list` SET  `res_ID` =?,`state` =? WHERE  `id` =?',[openid,0,msgid],function(err,result) {
