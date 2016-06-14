@@ -5,15 +5,15 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 
 var getUserInfo = require('./user').getUserInfo;
-var getOpenID = require('./user').getOpenID;
+var getUserID = require('./user').getUserID;
 var reply = require('./reply').reply;
 
 //连接数据库
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'root',
+  host: '120.27.123.90',
+  user: 'sunqing',
+  password: 'sunqing',
   database: 'express'
 });
 connection.connect(function (err) {if (err) throw err;});
@@ -44,7 +44,7 @@ app.use(session({
 //响应页面请求
 app.get('/post',function(req,res) {
 	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
-		getOpenID(req.query.code).then(function(data) {
+		getUserID(req.query.code).then(function(data) {
 		console.log(data);
 			req.session.userid = data;
 			console.log(req.session);
@@ -86,7 +86,7 @@ app.post('/post',function(req,res) {
 	connection.query('INSERT INTO `list`(`req_ID`,`nickname`,`img`,`usrname`, `address`,`company`,`telephone`,`state`,`time`) VALUES (?,?,?,?,?,?,?,?,NOW())',msg,function(err,doc) {
 			if (err) {
 				console.log(err);
-				return res.redirect('/post);
+				return res.redirect('/post');
 			}
 			console.log('Post sucessfully！');
 			return res.redirect('/success');
@@ -104,10 +104,30 @@ app.get('/success',function(req,res) {
 app.get('/list',function(req,res) {
 //	req.session.code = req.query.code;
 	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
-		getOpenID(req.query.code).then(function(openid) {
+		getUserID(req.query.code).then(function(openid) {
 			req.session.userid = openid;
 		});
-	}
+		connection.query('SELECT * FROM  list WHERE state=1',function(err,list) {
+		if (err) {
+			console.log(err);
+			return res.redirect('/post');
+		}
+		var result = [];
+		var total = list.length;
+		
+		console.log(total);
+		if (total > 0) {
+			for(i = 0;i<6;i++) {
+				if (i>=total) break;
+				result.push(list[i]);
+			}
+		}	
+		res.render('list',{
+			title:'请求列表',
+			result:result
+		});
+	});
+	}else {
 	connection.query('SELECT * FROM  list WHERE state=1',function(err,list) {
 		if (err) {
 			console.log(err);
@@ -127,7 +147,8 @@ app.get('/list',function(req,res) {
 			title:'请求列表',
 			result:result
 		});
-	});	
+	});
+	}	
 });
 
 app.get('/listall',function(req,res) {
@@ -157,15 +178,15 @@ app.get('/receive',function(req,res) {
 			console.log(err);
 			return res.redirect('/list');
 		}
-		console.log('update sucessfully!');	
-	});
-	connection.query('SELECT * FROM `list` WHERE  `id` =?',msgid,function(err,result) {
-		if (err) {
-			console.log(err);
-			return res.redirect('/list?openid='+req.session.userid);
-		}
-		console.log(result);
-		reply(result[0]);
+		console.log('update sucessfully!');
+		connection.query('SELECT * FROM `list` WHERE  `id` =?',msgid,function(err,result) {
+			if (err) {
+				console.log(err);
+				return res.redirect('/list');
+			}
+			console.log(result);
+			reply(result[0]);
+		});	
 	});
 	res.redirect('/list');
 //	});
@@ -173,12 +194,12 @@ app.get('/receive',function(req,res) {
 
 app.get('/my',function(req,res) {
 	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
-		getOpenID(req.query.code).then(function(data) {
+		getUserID(req.query.code).then(function(data) {
 			req.session.userid = data;
 	connection.query('SELECT * FROM `list` WHERE  `req_ID` =? && `state`=1',req.session.userid,function(err,result) {
 		if (err) {
 			console.log(err);
-			return res.redirect('/list?openid='+req.session.userid);
+			return res.redirect('/list');
 		}
 		console.log(result);
 		res.render('my',{

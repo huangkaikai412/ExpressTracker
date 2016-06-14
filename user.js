@@ -35,5 +35,5 @@ function getUserInfo(userID){
 
 module.exports = {
   	getUserInfo: getUserInfo,
-  	getOpenID:getUserID
+  	getUserID:getUserID
 };

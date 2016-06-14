@@ -9,7 +9,10 @@ var request = require('request');
 function reply(msg){			
 	getToken(CorpID, Secret).then(function(res){
     	var token = res.access_token;
-    		request('https://qyapi.weixin.qq.com/cgi-bin/user/get?access_token='+token+'&userid='+res_ID, function(err, res, data){
+    		request('https://qyapi.weixin.qq.com/cgi-bin/user/get?access_token='+token+'&userid='+msg.res_ID, function(err, res, data){
+    		if (err) {
+				console.log(err);
+			}
           	var name = JSON.parse(data).name;
           	var tele = JSON.parse(data).mobile;
           	console.log(data);

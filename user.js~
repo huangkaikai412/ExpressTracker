@@ -1,10 +1,10 @@
-var appID = require('./config').CorpID;
-var appSecret = require('./config').Secret;
+var CorpID = require('./config').CorpID;
+var Secret = require('./config').Secret;
 var getToken = require('./token').getToken;
 var request = require('request');
 
 function getUserID(code) {
-	return getToken(appID, appSecret).then(function(res){
+	return getToken(CorpID, Secret).then(function(res){
     var token = res.access_token;
 
     return new Promise(function(resolve, reject){
@@ -19,7 +19,7 @@ function getUserID(code) {
 }
 
 function getUserInfo(userID){
-  	return getToken(appID, appSecret).then(function(res){
+  	return getToken(CorpID, Secret).then(function(res){
     var token = res.access_token;
 
     return new Promise(function(resolve, reject){
