@@ -1,4 +1,5 @@
 module.exports = {
-  	appID: 'wxb3b414e758f37593',
-  	appSecret: '9eb394e3b57ed6ab6fb6dac4a4a09b72'
+  	CropID: 'wx1d3765eb45497a18',
+  	Secret: 'y5Z4DRFBfvWjcyI3n6RKz8QnzrRjqhg2xgqemYcmawjpLyEM-ScZ-Y-1UjhReDMm',
+  	Agentid:71
 };

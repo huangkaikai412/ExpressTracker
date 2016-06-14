@@ -44,9 +44,9 @@ app.use(session({
 //响应页面请求
 app.get('/post',function(req,res) {
 	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
-		getOpenID(req.query.code).then(function(openid) {
-		console.log(openid);
-			req.session.userid = openid;
+		getOpenID(req.query.code).then(function(data) {
+		console.log(data);
+			req.session.userid = data;
 			console.log(req.session);
 			res.render('post',{
 				title:'发布请求'
@@ -76,8 +76,8 @@ app.post('/post',function(req,res) {
 	
 	//获取用户个人信息
 	getUserInfo(openid).then(function(userInfo){
-		var nickname = userInfo.nickname;
-		      img = userInfo.headimgurl;
+		var nickname = userInfo.name;
+		      img = userInfo.avatar;
 		var msg = [openid,nickname,img,username,address,company,telephone,state];
 		console.log(userInfo);
 		console.log(msg);				
@@ -86,7 +86,7 @@ app.post('/post',function(req,res) {
 	connection.query('INSERT INTO `list`(`req_ID`,`nickname`,`img`,`usrname`, `address`,`company`,`telephone`,`state`,`time`) VALUES (?,?,?,?,?,?,?,?,NOW())',msg,function(err,doc) {
 			if (err) {
 				console.log(err);
-				return res.redirect('/post?openid='+req.session.userid);
+				return res.redirect('/post);
 			}
 			console.log('Post sucessfully！');
 			return res.redirect('/success');
@@ -111,7 +111,7 @@ app.get('/list',function(req,res) {
 	connection.query('SELECT * FROM  list WHERE state=1',function(err,list) {
 		if (err) {
 			console.log(err);
-			return res.redirect('/post?openid='+req.session.userid);
+			return res.redirect('/post');
 		}
 		var result = [];
 		var total = list.length;
@@ -134,7 +134,7 @@ app.get('/listall',function(req,res) {
 	connection.query('SELECT * FROM  list WHERE state=1',function(err,result) {
 		if (err) {
 			console.log(err);
-			return res.redirect('/post?openid='+req.session.userid);
+			return res.redirect('/post');
 		}	
 		
 		console.log(result);
@@ -155,7 +155,7 @@ app.get('/receive',function(req,res) {
 	connection.query('UPDATE  `list` SET  `res_ID` =?,`state` =? WHERE  `id` =?',[openid,0,msgid],function(err,result) {
 		if (err) {
 			console.log(err);
-			return res.redirect('/list?openid='+req.session.userid);
+			return res.redirect('/list');
 		}
 		console.log('update sucessfully!');	
 	});
@@ -167,14 +167,14 @@ app.get('/receive',function(req,res) {
 		console.log(result);
 		reply(result[0]);
 	});
-	res.redirect('/list?openid='+req.session.userid);
+	res.redirect('/list');
 //	});
 });
 
 app.get('/my',function(req,res) {
 	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
-		getOpenID(req.query.code).then(function(openid) {
-			req.session.userid = openid;
+		getOpenID(req.query.code).then(function(data) {
+			req.session.userid = data;
 	connection.query('SELECT * FROM `list` WHERE  `req_ID` =? && `state`=1',req.session.userid,function(err,result) {
 		if (err) {
 			console.log(err);
@@ -191,7 +191,7 @@ app.get('/my',function(req,res) {
 	connection.query('SELECT * FROM `list` WHERE  `req_ID` =? && `state`=1',req.session.userid,function(err,result) {
 		if (err) {
 			console.log(err);
-			return res.redirect('/list?openid='+req.session.userid);
+			return res.redirect('/list');
 		}
 		console.log(result);
 		res.render('my',{
@@ -203,10 +203,11 @@ app.get('/my',function(req,res) {
 });
 
 app.get('/edit',function(req,res) {
+	var msgid = req.query.msgid;
 	connection.query('SELECT * FROM `list` WHERE  `id` =?',msgid,function(err,result) {
 		if (err) {
 			console.log(err);
-			return res.redirect('/list?openid='+req.session.userid);
+			return res.redirect('/list');
 		}
 		res.render('edit',{
 			title:'编辑请求',
@@ -226,10 +227,10 @@ app.post('/edit',function(req,res) {
 	connection.query('UPDATE  `list` SET  `usrname` =?,`address` =?,`company` =?,`telephone` =? WHERE  `id` =?',data,function(err,result) {
 		if (err) {
 			console.log(err);
-			return res.redirect('/list?openid='+req.session.userid);
+			return res.redirect('/my');
 		}
 	});
-	res.redirect('/list?openid='+req.session.userid);
+	res.redirect('/my');
 });
 
 app.get('/delete',function(req,res) {
@@ -237,10 +238,10 @@ app.get('/delete',function(req,res) {
 	connection.query('DELETE  FROM `list` WHERE  `id` =?',msgid,function(err,result) {
 		if (err) {
 			console.log(err);
-			return res.redirect('/list?openid='+req.session.userid);
+			return res.redirect('/my');
 		}
 	});
-	res.redirect('/list?openid='+req.session.userid);
+	res.redirect('/my');
 });
 
 
