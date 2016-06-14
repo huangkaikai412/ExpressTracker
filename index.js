@@ -105,8 +105,9 @@ app.get('/list',function(req,res) {
 //	req.session.code = req.query.code;
 	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
 		getOpenID(req.query.code).then(function(openid) {
-		req.session.userid = openid;
-	});
+			req.session.userid = openid;
+		});
+	}
 	connection.query('SELECT * FROM  list WHERE state=1',function(err,list) {
 		if (err) {
 			console.log(err);

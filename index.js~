@@ -102,7 +102,11 @@ app.get('/success',function(req,res) {
 });
 
 app.get('/list',function(req,res) {
-	req.session.code = req.query.code;
+//	req.session.code = req.query.code;
+	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
+		getOpenID(req.query.code).then(function(openid) {
+		req.session.userid = openid;
+	});
 	connection.query('SELECT * FROM  list WHERE state=1',function(err,list) {
 		if (err) {
 			console.log(err);
@@ -141,11 +145,11 @@ app.get('/listall',function(req,res) {
 });
 
 app.get('/receive',function(req,res) {
-	console.log(req.session.code);
-	getOpenID(req.session.code).then(function(openid) {
-	req.session.userid = openid;
-	var msgid = req.query.msgid;
-	//var openid = req.session.userid;
+//	console.log(req.session.code);
+//	getOpenID(req.session.code).then(function(openid) {
+//	req.session.userid = openid;
+//	var msgid = req.query.msgid;
+	var openid = req.session.userid;
 	console.log(openid);
 	connection.query('UPDATE  `list` SET  `res_ID` =?,`state` =? WHERE  `id` =?',[openid,0,msgid],function(err,result) {
 		if (err) {
@@ -163,7 +167,7 @@ app.get('/receive',function(req,res) {
 		reply(result[0]);
 	});
 	res.redirect('/list?openid='+req.session.userid);
-	});
+//	});
 });
 
 app.get('/my',function(req,res) {
