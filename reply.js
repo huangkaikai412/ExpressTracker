@@ -17,7 +17,7 @@ function reply(msg){
     		method: 'POST',
     		json:true,	 
  		body: {
- 			"touser": msg.res_ID, 
+ 			"touser": msg.req_ID, 
     		"msgtype": "text", 
     		"text": {	
          		"content":name+"接受了你的的请求,即将把快递送到你手上~"

@@ -55,6 +55,7 @@ content: " ";
 	width:100%;
 	text-align:center;
 	padding:10px 0;
+	margin-top:10px;
 }
 
 .btn_bar {
