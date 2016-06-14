@@ -1,12 +1,13 @@
-var appID = require('./config').appID;
-var appSecret = require('./config').appSecret;
+var CorpID = require('./config').CorpID;
+var Secret = require('./config').Secret;
+var Agentid = require('./config').Agentid;
 var getToken = require('./token').getToken;
 var getUserInfo = require('./user').getUserInfo;
 
 var request = require('request');
 
 function reply(msg){			
-	getToken(appID, appSecret).then(function(res){
+	getToken(CorpID, Secret).then(function(res){
     	var token = res.access_token;
     		request('https://qyapi.weixin.qq.com/cgi-bin/user/get?access_token='+token+'&userid='+res_ID, function(err, res, data){
           	var name = JSON.parse(data).name;
@@ -19,7 +20,7 @@ function reply(msg){
  		body: {
  			"touser": msg.req_ID, 
     		"msgtype": "text", 
-    		"agentid": 71,
+    		"agentid": Agentid,
     		"text": {	
          		"content":name+"接受了你的的请求,即将把快递送到你手上~\n"+"ta的联系方式为"+tele
     			}	
@@ -37,7 +38,7 @@ function reply(msg){
     		body: {
     		"touser": msg.res_ID, 
     		"msgtype": "text", 
-    		"agentid": 71,
+    		"agentid": Agentid,
     		"text": {	
          		"content":"你接受了"+msg.nickname+"的请求,快帮ta把快递安全送到吧~\n"+"快递信息:"+msg.usrname+" "+msg.address+" "+msg.company
     			}	
