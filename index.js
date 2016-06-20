@@ -105,7 +105,7 @@ app.get('/success',function(req,res) {
 });
 
 app.get('/err',function(req,res) {
-	res.render('success',{
+	res.render('err',{
 		title:'操作失败'
 	});
 });
