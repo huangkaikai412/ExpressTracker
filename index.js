@@ -166,6 +166,42 @@ app.get('/listall',function(req,res) {
 	});	
 });
 
+app.get('/listdetail',function(req,res) {
+	var id = req.query.id;
+	console.log(id);
+	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
+		getUserID(req.query.code).then(function(openid) {
+			req.session.userid = openid;
+		console.log(req.session.userid);
+		connection.query('SELECT * FROM  list WHERE id=?',id,function(err,result) {
+			if (err) {
+				console.log(err);
+				return res.redirect('/post');
+			}	
+		
+			console.log(result);
+			res.render('listdetail',{
+				title:'请求列表',
+				result:result[0]
+			});
+		});
+	});	
+	}else {
+		connection.query('SELECT * FROM  list WHERE id=?',id,function(err,result) {
+			if (err) {
+				console.log(err);
+				return res.redirect('/post');
+			}	
+		
+			console.log(result);
+			res.render('listdetail',{
+				title:'请求列表',
+				result:result[0]
+			});
+		});
+	}	
+});
+
 app.get('/receive',function(req,res) {
 //	console.log(req.session.code);
 //	getOpenID(req.session.code).then(function(openid) {

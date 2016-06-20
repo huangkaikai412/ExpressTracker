@@ -107,7 +107,27 @@ app.get('/list',function(req,res) {
 		getUserID(req.query.code).then(function(openid) {
 			req.session.userid = openid;
 		});
-	}
+		connection.query('SELECT * FROM  list WHERE state=1',function(err,list) {
+		if (err) {
+			console.log(err);
+			return res.redirect('/post');
+		}
+		var result = [];
+		var total = list.length;
+		
+		console.log(total);
+		if (total > 0) {
+			for(i = 0;i<6;i++) {
+				if (i>=total) break;
+				result.push(list[i]);
+			}
+		}	
+		res.render('list',{
+			title:'请求列表',
+			result:result
+		});
+	});
+	}else {
 	connection.query('SELECT * FROM  list WHERE state=1',function(err,list) {
 		if (err) {
 			console.log(err);
@@ -127,7 +147,8 @@ app.get('/list',function(req,res) {
 			title:'请求列表',
 			result:result
 		});
-	});	
+	});
+	}	
 });
 
 app.get('/listall',function(req,res) {
@@ -143,6 +164,42 @@ app.get('/listall',function(req,res) {
 			result:result
 		});
 	});	
+});
+
+app.get('/listdetail',function(req,res) {
+	var id = req.query.id;
+	console.log(id);
+	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
+		getUserID(req.query.code).then(function(openid) {
+			req.session.userid = openid;
+		});
+		console.log(req.session.userid);
+		connection.query('SELECT * FROM  list WHERE id=?',id,function(err,result) {
+			if (err) {
+				console.log(err);
+				return res.redirect('/post');
+			}	
+		
+			console.log(result);
+			res.render('listdetail',{
+				title:'请求列表',
+				result:result[0]
+			});
+		});	
+	}else {
+		connection.query('SELECT * FROM  list WHERE id=?',id,function(err,result) {
+			if (err) {
+				console.log(err);
+				return res.redirect('/post');
+			}	
+		
+			console.log(result);
+			res.render('listdetail',{
+				title:'请求列表',
+				result:result[0]
+			});
+		});
+	}	
 });
 
 app.get('/receive',function(req,res) {
