@@ -47,6 +47,7 @@ app.get('/post',function(req,res) {
 		getUserID(req.query.code).then(function(data) {
 		console.log(data);
 			req.session.userid = data;
+			if (typeof(req.session.userid) == 'undefined' || !req.session.userid) res.redirect('/err');
 			console.log(req.session);
 			res.render('post',{
 				title:'发布请求'
@@ -101,12 +102,18 @@ app.get('/success',function(req,res) {
 	});	
 });
 
+app.get('/err',function(req,res) {
+	res.render('success',{
+		title:'操作失败'
+	});
+});
+
 app.get('/list',function(req,res) {
 //	req.session.code = req.query.code;
 	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
 		getUserID(req.query.code).then(function(openid) {
 			req.session.userid = openid;
-		});
+		if (typeof(req.session.userid) == 'undefined' || !req.session.userid) res.redirect('/err');
 		connection.query('SELECT * FROM  list WHERE state=1',function(err,list) {
 		if (err) {
 			console.log(err);
@@ -126,6 +133,7 @@ app.get('/list',function(req,res) {
 			title:'请求列表',
 			result:result
 		});
+	});
 	});
 	}else {
 	connection.query('SELECT * FROM  list WHERE state=1',function(err,list) {
@@ -152,6 +160,7 @@ app.get('/list',function(req,res) {
 });
 
 app.get('/listall',function(req,res) {
+	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) res.redirect('/err');
 	connection.query('SELECT * FROM  list WHERE state=1',function(err,result) {
 		if (err) {
 			console.log(err);
@@ -172,7 +181,7 @@ app.get('/listdetail',function(req,res) {
 	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
 		getUserID(req.query.code).then(function(openid) {
 			req.session.userid = openid;
-		console.log(req.session.userid);
+			if (typeof(req.session.userid) == 'undefined' || !req.session.userid) res.redirect('/err');
 		connection.query('SELECT * FROM  list WHERE id=?',id,function(err,result) {
 			if (err) {
 				console.log(err);
@@ -184,8 +193,8 @@ app.get('/listdetail',function(req,res) {
 				title:'请求列表',
 				result:result[0]
 			});
-		});
-	});	
+		});	
+	});
 	}else {
 		connection.query('SELECT * FROM  list WHERE id=?',id,function(err,result) {
 			if (err) {
@@ -232,6 +241,7 @@ app.get('/my',function(req,res) {
 	if (typeof(req.session.userid) == 'undefined' || !req.session.userid) {
 		getUserID(req.query.code).then(function(data) {
 			req.session.userid = data;
+			if (typeof(req.session.userid) == 'undefined' || !req.session.userid) res.redirect('/err');
 	connection.query('SELECT * FROM `list` WHERE  `req_ID` =? && `state`=1',req.session.userid,function(err,result) {
 		if (err) {
 			console.log(err);
@@ -245,17 +255,9 @@ app.get('/my',function(req,res) {
 	});
 	});
 	}else {
-	connection.query('SELECT * FROM `list` WHERE  `req_ID` =? && `state`=1',req.session.userid,function(err,result) {
-		if (err) {
-			console.log(err);
-			return res.redirect('/list');
-		}
-		console.log(result);
-		res.render('my',{
-			title:'请求列表',
-			result:result
+		res.render('err',{
+			title:'操作失败',
 		});
-	});
 	}
 });
 
