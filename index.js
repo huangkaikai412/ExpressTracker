@@ -74,6 +74,8 @@ app.post('/post',function(req,res) {
 	      company = req.body.company;
 	      telephone = parseInt(req.body.telephone);
 	var state = 1;
+	if (typeof(username) == 'undefined' || typeof(address) == 'undefined' ||
+	typeof(company) == 'undefined' ||typeof(telephone) == 'undefined') res.redirect('/err');
 	
 	//获取用户个人信息
 	getUserInfo(openid).then(function(userInfo){
@@ -255,9 +257,17 @@ app.get('/my',function(req,res) {
 	});
 	});
 	}else {
-		res.render('err',{
-			title:'操作失败',
+		connection.query('SELECT * FROM `list` WHERE  `req_ID` =? && `state`=1',req.session.userid,function(err,result) {
+		if (err) {
+			console.log(err);
+			return res.redirect('/list');
+		}
+		console.log(result);
+		res.render('my',{
+			title:'请求列表',
+			result:result
 		});
+	});
 	}
 });
 
